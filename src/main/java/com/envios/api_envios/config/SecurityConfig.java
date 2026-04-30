@@ -44,14 +44,18 @@ public class SecurityConfig {
                         //productos
                         .requestMatchers(HttpMethod.POST, "/api/v1/productos/guardar").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/productos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/productos/{id}").permitAll()
 
                         //pagos
                         .requestMatchers(HttpMethod.POST, "/api/v1/pagos/guardarPago").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/pagos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/pagos/{id}/estado").permitAll()
 
                         //envios
                         .requestMatchers(HttpMethod.POST, "/api/v1/envios/guardarEnvio").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios/rastrear/{dniRemitente}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/envios/{id}/estado").permitAll()
+
                         .anyRequest().authenticated()
                 );
                 //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

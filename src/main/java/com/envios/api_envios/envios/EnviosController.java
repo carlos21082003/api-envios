@@ -23,4 +23,11 @@ public class EnviosController {
     public ResponseEntity<EnviosDTO> getEnvioByDniRemitente(@PathVariable String dniRemitente) {
         return ResponseEntity.ok(enviosService.getEnvioByDniRemitente(dniRemitente));
     }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<EstadoEnvio> actualizarEstado(
+            @PathVariable Long id,
+            @RequestBody EnviosDTO enviosDTO) {
+        return ResponseEntity.ok(enviosService.actualizarEstado(id, enviosDTO.estadoEnvio()));
+    }
 }

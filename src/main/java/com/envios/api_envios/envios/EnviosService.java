@@ -79,4 +79,14 @@ public class EnviosService {
         );
         return response;
     }
+
+    public EstadoEnvio actualizarEstado(Long id, EstadoEnvio nuevoEstado) {
+        Envios envio = enviosRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Envio no encontrado"));
+
+        envio.setEstadoEnvio(nuevoEstado);
+        enviosRepository.save(envio);
+
+        return envio.getEstadoEnvio();
+    }
 }

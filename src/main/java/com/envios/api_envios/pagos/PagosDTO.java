@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public record PagosDTO(
         Long id,
-        double monto,
+        Double monto,
         String metodoPago,
         LocalDateTime fechaPago,
         EstadoPago estadoPago

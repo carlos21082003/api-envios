@@ -22,4 +22,12 @@ public class PagosController {
     public ResponseEntity<PagosDTO> getPagosById(@PathVariable Long id) {
         return ResponseEntity.ok(pagosService.getPagoById(id));
     }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<PagosDTO> actualizarEstado(
+            @PathVariable Long id,
+            @RequestBody PagosDTO pagosDTO) {
+
+        return ResponseEntity.ok(pagosService.actualizarEstado(id, pagosDTO));
+    }
 }

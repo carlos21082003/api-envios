@@ -22,4 +22,9 @@ public class ProductosController {
     public ResponseEntity<ProductosDTO> getProductoById(@PathVariable Long id) {
         return ResponseEntity.ok(productosService.getProductoById(id));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductosDTO> actualizar(@PathVariable Long id, @RequestBody ProductosDTO productoDTO) {
+        return ResponseEntity.ok(productosService.actualizar(id, productoDTO));
+    }
 }

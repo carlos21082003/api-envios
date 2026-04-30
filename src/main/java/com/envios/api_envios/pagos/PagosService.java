@@ -34,4 +34,21 @@ public class PagosService {
         );
         return response;
     }
+
+    // metodo para actualizar el estado del pago
+    public PagosDTO actualizarEstado(Long id, PagosDTO pagosDTO) {
+        Pagos pago = pagosRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pago no encontrado"));
+
+        pago.setEstadoPago(pagosDTO.estadoPago());
+        pagosRepository.save(pago);
+
+        return new PagosDTO(
+                pago.getId(),
+                pago.getMonto(),
+                pago.getMetodoPago(),
+                pago.getFechaPago(),
+                pago.getEstadoPago()
+        );
+    }
 }
