@@ -1,6 +1,7 @@
 package com.envios.api_envios.envios;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +30,14 @@ public class EnviosController {
             @PathVariable Long id,
             @RequestBody EnviosDTO enviosDTO) {
         return ResponseEntity.ok(enviosService.actualizarEstado(id, enviosDTO.estadoEnvio()));
+    }
+
+    //listar con paginacion
+    @GetMapping
+    public ResponseEntity<Page<EnviosDTO>> listarEnvios(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "15") int cantidad) {
+
+        return ResponseEntity.ok(enviosService.listarEnvios(pagina, cantidad));
     }
 }

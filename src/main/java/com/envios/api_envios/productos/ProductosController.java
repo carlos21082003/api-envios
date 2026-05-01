@@ -10,13 +10,6 @@ import org.springframework.web.bind.annotation.*;
 public class ProductosController {
     private final ProductosService productosService;
 
-    //guardar productos
-    @PostMapping("/guardar")
-    public ResponseEntity<Productos> guardar(@RequestBody ProductosDTO productoDTO) {
-        Productos guardarProductos = productosService.guardar(productoDTO);
-        return ResponseEntity.ok(guardarProductos);
-    }
-
     //listar id
     @GetMapping("/{id}")
     public ResponseEntity<ProductosDTO> getProductoById(@PathVariable Long id) {
