@@ -55,7 +55,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/envios/guardarEnvio").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios/rastrear/{dniRemitente}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/envios/{id}/estado").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/envios/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios").permitAll()
+
+                        //reportes
+                        .requestMatchers(HttpMethod.GET, "/api/v1/reportes").permitAll()
 
                         .anyRequest().authenticated()
                 );

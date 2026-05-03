@@ -23,6 +23,7 @@ public class EnviosMapper {
         envio.setNombreRemitente(dto.nombreRemitente());
         envio.setDniRemitente(dto.dniRemitente());
         envio.setEstadoEnvio(dto.estadoEnvio());
+        envio.setProvincia(dto.provincia());
         return envio;
     }
 
@@ -38,7 +39,8 @@ public class EnviosMapper {
                 envio.getDniRemitente(),
                 envio.getEstadoEnvio(),
                 pagosMapper.toDTO(envio.getPago()),
-                productosMapper.toDTO(envio.getProducto())
+                productosMapper.toDTO(envio.getProducto()),
+                envio.getProvincia()
         );
     }
 }

@@ -19,6 +19,12 @@ public class EnviosService {
         return enviosRepository.save(envio);
     }
 
+    public EnviosDTO getEnvioById(Long id) {
+        Envios envio = enviosRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Envio no encontrado"));
+        return enviosMapper.toDTO(envio);
+    }
+
     public EnviosDTO getEnvioByDniRemitente(String dniRemitente) {
         Envios envio = enviosRepository.findByDniRemitente(dniRemitente)
                 .orElseThrow(() -> new IllegalArgumentException("Envio no encontrado"));

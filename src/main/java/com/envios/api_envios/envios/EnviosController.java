@@ -25,6 +25,11 @@ public class EnviosController {
         return ResponseEntity.ok(enviosService.getEnvioByDniRemitente(dniRemitente));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<EnviosDTO> getEnvioById(@PathVariable Long id) {
+        return ResponseEntity.ok(enviosService.getEnvioById(id));
+    }
+
     @PutMapping("/{id}/estado")
     public ResponseEntity<EstadoEnvio> actualizarEstado(
             @PathVariable Long id,

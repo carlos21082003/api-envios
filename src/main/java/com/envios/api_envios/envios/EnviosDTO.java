@@ -16,6 +16,7 @@ public record EnviosDTO(
         String dniRemitente,
         EstadoEnvio estadoEnvio,
         PagosDTO pago,  
-        ProductosDTO producto 
+        ProductosDTO producto,
+        String provincia
 ) {
 }

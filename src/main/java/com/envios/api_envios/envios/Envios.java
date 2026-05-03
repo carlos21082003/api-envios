@@ -36,4 +36,5 @@ public class Envios {
     private String nombreRemitente;
     private String dniRemitente; //codigo de rastreo
     private EstadoEnvio estadoEnvio;
+    private String provincia;
 }
