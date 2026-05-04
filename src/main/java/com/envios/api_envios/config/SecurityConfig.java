@@ -45,16 +45,25 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/productos/guardar").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/productos/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/productos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET,  "/api/v1/productos").permitAll()
+
+                        //tipo producto
+                        .requestMatchers(HttpMethod.POST, "/api/v1/tipo-productos/guardar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/tipo-productos").permitAll()
+                        .requestMatchers(HttpMethod.GET,  "/api/v1/tipo-productos").permitAll()
+                        .requestMatchers(HttpMethod.GET,  "/api/v1/tipo-productos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PUT,  "/api/v1/tipo-productos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/tipo-productos/{id}").permitAll()
 
                         //pagos
-                        .requestMatchers(HttpMethod.POST, "/api/v1/pagos/guardarPago").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/pagos/{id}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/pagos/{id}/estado").permitAll()
+                        .requestMatchers(HttpMethod.PUT,  "/api/v1/pagos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/pagos").permitAll()
 
                         //envios
                         .requestMatchers(HttpMethod.POST, "/api/v1/envios/guardarEnvio").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios/rastrear/{dniRemitente}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/envios/{id}/estado").permitAll()
+                        .requestMatchers(HttpMethod.PUT,  "/api/v1/envios/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios").permitAll()
 

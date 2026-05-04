@@ -1,13 +1,10 @@
 package com.envios.api_envios.productos;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
+import com.envios.api_envios.tipoProducto.TipoProducto;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Id;
 
 @Data
 @Entity
@@ -19,7 +16,14 @@ public class Productos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String tipoProducto;
+    @ManyToOne
+    @JoinColumn(name = "tipo_producto_id")
+    private TipoProducto tipoProducto;
     private String descripcion;
     private Double numeroPaquetes;
+    @Transient
+    public Double getPrecioPorProducto() {
+        if (tipoProducto == null || numeroPaquetes == null) return 0.0;
+        return tipoProducto.getPrecioBase() * numeroPaquetes;
+    }
 }

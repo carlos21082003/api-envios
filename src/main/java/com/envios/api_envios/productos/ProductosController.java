@@ -1,6 +1,7 @@
 package com.envios.api_envios.productos;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,5 +20,12 @@ public class ProductosController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductosDTO> actualizar(@PathVariable Long id, @RequestBody ProductosDTO productoDTO) {
         return ResponseEntity.ok(productosService.actualizar(id, productoDTO));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ProductosDTO>> listar(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "15") int cantidad) {
+        return ResponseEntity.ok(productosService.listar(pagina, cantidad));
     }
 }

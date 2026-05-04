@@ -14,9 +14,8 @@ public class EnviosController {
 
     // Guardar envio
     @PostMapping("/guardarEnvio")
-    public ResponseEntity<Envios> guardar(@RequestBody EnviosDTO enviosDTO) {
-        Envios guardarEnvio = enviosService.guardar(enviosDTO);
-        return ResponseEntity.ok(guardarEnvio);
+    public ResponseEntity<EnviosDTO> guardar(@RequestBody EnviosDTO enviosDTO) {
+        return ResponseEntity.ok(enviosService.guardar(enviosDTO));  // EnviosDTO no Envios
     }
 
     // Buscar por DNI del remitente (código de rastreo)
@@ -30,13 +29,6 @@ public class EnviosController {
         return ResponseEntity.ok(enviosService.getEnvioById(id));
     }
 
-    @PutMapping("/{id}/estado")
-    public ResponseEntity<EstadoEnvio> actualizarEstado(
-            @PathVariable Long id,
-            @RequestBody EnviosDTO enviosDTO) {
-        return ResponseEntity.ok(enviosService.actualizarEstado(id, enviosDTO.estadoEnvio()));
-    }
-
     //listar con paginacion
     @GetMapping
     public ResponseEntity<Page<EnviosDTO>> listarEnvios(
@@ -44,5 +36,12 @@ public class EnviosController {
             @RequestParam(defaultValue = "15") int cantidad) {
 
         return ResponseEntity.ok(enviosService.listarEnvios(pagina, cantidad));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EnviosDTO> actualizarEnvio(
+            @PathVariable Long id,
+            @RequestBody EnviosDTO enviosDTO) {
+        return ResponseEntity.ok(enviosService.actualizarEnvio(id, enviosDTO));
     }
 }

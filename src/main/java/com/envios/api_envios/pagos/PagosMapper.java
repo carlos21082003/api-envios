@@ -4,9 +4,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PagosMapper {
+
     public Pagos toEntity(PagosDTO dto) {
         Pagos pago = new Pagos();
-        pago.setMonto(dto.monto());
+
         pago.setMetodoPago(dto.metodoPago());
         pago.setFechaPago(dto.fechaPago());
         pago.setEstadoPago(dto.estadoPago());
@@ -24,6 +25,8 @@ public class PagosMapper {
     }
 
     public void updateEntity(Pagos pago, PagosDTO dto) {
+        pago.setMetodoPago(dto.metodoPago());
+        pago.setFechaPago(dto.fechaPago());
         pago.setEstadoPago(dto.estadoPago());
     }
 }

@@ -2,8 +2,10 @@ package com.envios.api_envios.productos;
 
 public record ProductosDTO(
         Long id,
-        String  tipoProducto,
+        Long tipoProductoId,
+        String tipoProductoNombre,
         String descripcion,
-        Double numeroPaquetes
+        Double numeroPaquetes,
+        Double precioPorProducto
 ) {
 }
