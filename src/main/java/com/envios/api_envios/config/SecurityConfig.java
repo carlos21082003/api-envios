@@ -48,13 +48,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,  "/api/v1/productos").permitAll()
 
                         //tipo producto
-                        .requestMatchers(HttpMethod.POST, "/api/v1/tipo-productos/guardar").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/tipo-productos").permitAll()
-                        .requestMatchers(HttpMethod.GET,  "/api/v1/tipo-productos").permitAll()
-                        .requestMatchers(HttpMethod.GET,  "/api/v1/tipo-productos/{id}").permitAll()
-                        .requestMatchers(HttpMethod.PUT,  "/api/v1/tipo-productos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET,    "/api/v1/tipo-productos").permitAll()
+                        .requestMatchers(HttpMethod.GET,    "/api/v1/tipo-productos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST,   "/api/v1/tipo-productos/guardar").permitAll()
+                        .requestMatchers(HttpMethod.PUT,    "/api/v1/tipo-productos/{id}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/tipo-productos/{id}").permitAll()
-
                         //pagos
                         .requestMatchers(HttpMethod.GET, "/api/v1/pagos/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT,  "/api/v1/pagos/{id}").permitAll()

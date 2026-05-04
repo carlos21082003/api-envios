@@ -28,9 +28,13 @@ public class ReportesService {
                 pagosRepository.countByEstadoPago(EstadoPago.PENDIENTE),
                 pagosRepository.countByEstadoPago(EstadoPago.PAGADO),
                 pagosRepository.countByEstadoPago(EstadoPago.PAGADOALRECOGER),
+                pagosRepository.sumTotalPaquetes(),
 
-                // productos
-                pagosRepository.sumTotalPaquetes()
+                // nuevos
+                enviosRepository.countByProvincia(),
+                pagosRepository.countByEstadoPago(EstadoPago.PAGADO),
+                pagosRepository.countByEstadoPago(EstadoPago.PENDIENTE),
+                pagosRepository.countByEstadoPago(EstadoPago.PAGADOALRECOGER)
         );
     }
 }

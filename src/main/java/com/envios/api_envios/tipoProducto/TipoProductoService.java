@@ -32,15 +32,23 @@ public class TipoProductoService {
         return tipoProductoMapper.toDTO(tipo);
     }
 
-    public Page<TipoProductoDTO> listar(int pagina, int cantidad) {
+    // Cambia el listarTodos para que sea el estándar de paginación
+    public Page<TipoProductoDTO> listarPaginado(int pagina, int cantidad) {
         Pageable pageable = PageRequest.of(pagina, cantidad);
         return tipoProductoRepository.findAll(pageable)
                 .map(tipoProductoMapper::toDTO);
     }
 
+    public Page<TipoProductoDTO> listarActivos(int pagina, int cantidad) {
+        Pageable pageable = PageRequest.of(pagina, cantidad);
+        return tipoProductoRepository.findByActivoTrue(pageable)
+                .map(tipoProductoMapper::toDTO);
+    }
+
     public void eliminar(Long id) {
-        tipoProductoRepository.findById(id)
+        TipoProducto tipo = tipoProductoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("TipoProducto no encontrado"));
-        tipoProductoRepository.deleteById(id);
+        tipo.setActivo(false);
+        tipoProductoRepository.save(tipo);
     }
 }

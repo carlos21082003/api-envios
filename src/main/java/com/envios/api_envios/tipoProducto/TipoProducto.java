@@ -17,4 +17,5 @@ public class TipoProducto {
     private String nombre;
     private Double precioBase;
     private String descripcion;
+    private Boolean activo = true;
 }

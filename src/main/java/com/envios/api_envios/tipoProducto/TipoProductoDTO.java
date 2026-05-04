@@ -4,6 +4,7 @@ public record TipoProductoDTO(
         Long id,
         String nombre,
         Double precioBase,
-        String descripcion
+        String descripcion,
+        Boolean activo
 ) {
 }

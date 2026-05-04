@@ -11,6 +11,7 @@ public class TipoProductoMapper {
         tipo.setNombre(dto.nombre());
         tipo.setPrecioBase(dto.precioBase());
         tipo.setDescripcion(dto.descripcion());
+        tipo.setActivo(true);
         return tipo;
     }
 
@@ -19,7 +20,8 @@ public class TipoProductoMapper {
                 tipo.getId(),
                 tipo.getNombre(),
                 tipo.getPrecioBase(),
-                tipo.getDescripcion()
+                tipo.getDescripcion(),
+                tipo.getActivo()
         );
     }
 
@@ -27,5 +29,6 @@ public class TipoProductoMapper {
         tipo.setNombre(dto.nombre());
         tipo.setPrecioBase(dto.precioBase());
         tipo.setDescripcion(dto.descripcion());
+        tipo.setActivo(dto.activo());
     }
 }

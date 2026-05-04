@@ -31,8 +31,13 @@ public class TipoProductoController {
     @GetMapping
     public ResponseEntity<Page<TipoProductoDTO>> listar(
             @RequestParam(defaultValue = "0") int pagina,
-            @RequestParam(defaultValue = "15") int cantidad) {
-        return ResponseEntity.ok(tipoProductoService.listar(pagina, cantidad));
+            @RequestParam(defaultValue = "15") int cantidad,
+            @RequestParam(defaultValue = "false") boolean soloActivos) { // El parámetro es opcional
+
+        if (soloActivos) {
+            return ResponseEntity.ok(tipoProductoService.listarActivos(pagina, cantidad));
+        }
+        return ResponseEntity.ok(tipoProductoService.listarPaginado(pagina, cantidad));
     }
 
     @DeleteMapping("/{id}")
