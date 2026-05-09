@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,   "/api/v1/tipo-productos/guardar").permitAll()
                         .requestMatchers(HttpMethod.PUT,    "/api/v1/tipo-productos/{id}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/tipo-productos/{id}").permitAll()
+
                         //pagos
                         .requestMatchers(HttpMethod.GET, "/api/v1/pagos/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT,  "/api/v1/pagos/{id}").permitAll()
@@ -64,6 +65,33 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT,  "/api/v1/envios/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios").permitAll()
+
+                        // sedes
+                        .requestMatchers(HttpMethod.POST,   "/api/v1/sedes").permitAll()
+                        .requestMatchers(HttpMethod.GET,    "/api/v1/sedes").permitAll()
+                        .requestMatchers(HttpMethod.GET,    "/api/v1/sedes/todas").permitAll()
+                        .requestMatchers(HttpMethod.GET,    "/api/v1/sedes/activas").permitAll()
+                        .requestMatchers(HttpMethod.GET,    "/api/v1/sedes/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PUT,    "/api/v1/sedes/{id}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/sedes/{id}").permitAll()
+
+                        //ruta sedes
+                        .requestMatchers(HttpMethod.POST,  "/api/v1/rutas-sedes").permitAll()
+                        .requestMatchers(HttpMethod.GET,   "/api/v1/rutas-sedes").permitAll()
+                        .requestMatchers(HttpMethod.GET,   "/api/v1/rutas-sedes/origen/{sedeOrigenId}").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/rutas-sedes/{id}/estado").permitAll()
+
+                        // solicitudes
+                        // clientes pueden solicitar sin login
+                        .requestMatchers(HttpMethod.POST, "/api/v1/solicitudes/recojo").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/solicitudes/delivery").permitAll()
+                        .requestMatchers(HttpMethod.GET,  "/api/v1/solicitudes/cliente/{dni}").permitAll()
+                        // empleados y admins gestionan las solicitudes
+                        .requestMatchers(HttpMethod.GET,   "/api/v1/solicitudes/sede/{sedeId}").permitAll()
+                        .requestMatchers(HttpMethod.GET,   "/api/v1/solicitudes/sede/{sedeId}/estado/{estado}").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/aceptar").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/rechazar").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/completar").permitAll()
 
                         //reportes
                         .requestMatchers(HttpMethod.GET, "/api/v1/reportes").permitAll()

@@ -1,5 +1,6 @@
 package com.envios.api_envios.envios;
 
+import com.envios.api_envios.rutas.RutaSedeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,15 +14,22 @@ import lombok.RequiredArgsConstructor;
 public class EnviosService {
     private final EnviosRepository enviosRepository;
     private final EnviosMapper enviosMapper;
+    private final RutaSedeService rutaSedeService;
 
     public EnviosDTO guardar(EnviosDTO enviosDTO) {
-        Envios envio = enviosMapper.toEntity(enviosDTO);
+        // valida que la ruta esté habilitada
+        if (enviosDTO.sedeOrigenId() != null && enviosDTO.sedeDestinoId() != null) {
+            if (!rutaSedeService.existeRuta(enviosDTO.sedeOrigenId(), enviosDTO.sedeDestinoId())) {
+                throw new IllegalArgumentException(
+                        "No existe una ruta habilitada entre estas sedes");
+            }
+        }
 
+        Envios envio = enviosMapper.toEntity(enviosDTO);
         Double montoCalculado = envio.getProducto().getPrecioPorProducto();
         envio.getPago().setMonto(montoCalculado);
 
-        Envios guardado = enviosRepository.save(envio);
-        return enviosMapper.toDTO(guardado);
+        return enviosMapper.toDTO(enviosRepository.save(envio));
     }
 
     public EnviosDTO getEnvioById(Long id) {
@@ -40,6 +48,17 @@ public class EnviosService {
         Pageable pageable = PageRequest.of(pagina, cantidad);
         Page<Envios> envios = enviosRepository.findAll(pageable);
         return envios.map(envio -> enviosMapper.toDTO(envio));
+    }
+
+    public Page<EnviosDTO> listarEnvios(int pagina, int cantidad, Long sedeId) {
+        Pageable pageable = PageRequest.of(pagina, cantidad);
+
+        if (sedeId != null) {
+            return enviosRepository.findBySedeId(sedeId, pageable)
+                    .map(enviosMapper::toDTO);
+        }
+        return enviosRepository.findAll(pageable)
+                .map(enviosMapper::toDTO);
     }
 
     public EnviosDTO actualizarEnvio(Long id, EnviosDTO enviosDTO) {

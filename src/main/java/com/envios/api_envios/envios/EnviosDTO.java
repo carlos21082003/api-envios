@@ -17,6 +17,12 @@ public record EnviosDTO(
         EstadoEnvio estadoEnvio,
         PagosDTO pago,  
         ProductosDTO producto,
-        String provincia
+        String provincia,
+        Long sedeId,
+        String sedeNombre,
+        String nombrePersonaAutorizada,
+        String dniPersonaAutorizada,
+        Long sedeOrigenId,
+        Long sedeDestinoId
 ) {
 }

@@ -2,6 +2,7 @@ package com.envios.api_envios.envios;
 
 import com.envios.api_envios.pagos.Pagos;
 import com.envios.api_envios.productos.Productos;
+import com.envios.api_envios.sede.Sede;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,4 +38,11 @@ public class Envios {
     private String dniRemitente; //codigo de rastreo
     private EstadoEnvio estadoEnvio;
     private String provincia;
+
+    @ManyToOne
+    @JoinColumn(name = "sede_id")
+    private Sede sede;
+
+    private String nombrePersonaAutorizada;
+    private String dniPersonaAutorizada;
 }

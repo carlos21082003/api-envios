@@ -2,6 +2,8 @@ package com.envios.api_envios.envios;
 
 import com.envios.api_envios.pagos.PagosMapper;
 import com.envios.api_envios.productos.ProductosMapper;
+import com.envios.api_envios.sede.Sede;
+import com.envios.api_envios.sede.SedeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class EnviosMapper {
     private final PagosMapper pagosMapper;
     private final ProductosMapper productosMapper;
+    private final SedeRepository sedeRepository;
 
     public Envios toEntity(EnviosDTO dto) {
         Envios envio = new Envios();
@@ -24,6 +27,14 @@ public class EnviosMapper {
         envio.setDniRemitente(dto.dniRemitente());
         envio.setEstadoEnvio(dto.estadoEnvio());
         envio.setProvincia(dto.provincia());
+        envio.setNombrePersonaAutorizada(dto.nombrePersonaAutorizada());
+        envio.setDniPersonaAutorizada(dto.dniPersonaAutorizada());
+
+        if (dto.sedeId() != null) {
+            Sede sede = sedeRepository.findById(dto.sedeId())
+                    .orElseThrow(() -> new IllegalArgumentException("Sede no encontrada"));
+            envio.setSede(sede);
+        }
         return envio;
     }
 
@@ -40,7 +51,13 @@ public class EnviosMapper {
                 envio.getEstadoEnvio(),
                 pagosMapper.toDTO(envio.getPago()),
                 productosMapper.toDTO(envio.getProducto()),
-                envio.getProvincia()
+                envio.getProvincia(),
+                envio.getSede() != null ? envio.getSede().getId() : null,
+                envio.getSede() != null ? envio.getSede().getNombre() : null,
+                envio.getNombrePersonaAutorizada(),
+                envio.getDniPersonaAutorizada(),
+                null,
+                null
         );
     }
 }

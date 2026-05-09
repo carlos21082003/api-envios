@@ -18,7 +18,7 @@ public class Pagos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private double monto;
+    private Double monto;
     private String metodoPago;
     private LocalDateTime fechaPago;
     @Enumerated(EnumType.STRING)
