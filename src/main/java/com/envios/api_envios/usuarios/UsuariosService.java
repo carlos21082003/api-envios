@@ -43,7 +43,8 @@ public class UsuariosService implements UserDetailsService {
                 usuario.getDni(),
                 usuario.getRol().name(),
                 usuario.getNombre(),
-                usuario.getSede() != null ? usuario.getSede().getId() : null
+                usuario.getSede() != null ? usuario.getSede().getId() : null,
+                usuario.getSede() != null ? usuario.getSede().getNombre() : null
         );
     }
 

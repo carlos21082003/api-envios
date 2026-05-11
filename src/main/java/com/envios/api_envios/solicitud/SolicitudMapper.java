@@ -31,7 +31,9 @@ public class SolicitudMapper {
                 solicitud.getSede() != null ? solicitud.getSede().getNombre() : null,
                 solicitud.getEnvio() != null ? solicitud.getEnvio().getId() : null,
                 solicitud.getNombrePersonaRecibe(),
-                solicitud.getDniPersonaRecibe()
+                solicitud.getDniPersonaRecibe(),
+                solicitud.getSedeDestino() != null ? solicitud.getSedeDestino().getId() : null,
+                solicitud.getSedeDestino() != null ? solicitud.getSedeDestino().getNombre() : null
         );
     }
 
@@ -58,6 +60,12 @@ public class SolicitudMapper {
             Envios envio = enviosRepository.findById(dto.envioId())
                     .orElseThrow(() -> new IllegalArgumentException("Envío no encontrado"));
             solicitud.setEnvio(envio);
+        }
+
+        if (dto.sedeDestinoId() != null) {
+            Sede sedeDestino = sedeRepository.findById(dto.sedeDestinoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Sede destino no encontrada"));
+            solicitud.setSedeDestino(sedeDestino);
         }
 
         return solicitud;

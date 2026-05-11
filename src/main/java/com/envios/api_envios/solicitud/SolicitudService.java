@@ -1,9 +1,15 @@
 package com.envios.api_envios.solicitud;
 
 import com.envios.api_envios.envios.Envios;
+import com.envios.api_envios.envios.EnviosMapper;
 import com.envios.api_envios.envios.EnviosRepository;
+import com.envios.api_envios.envios.EstadoEnvio;
+import com.envios.api_envios.pagos.Pagos;
+import com.envios.api_envios.productos.Productos;
 import com.envios.api_envios.sede.Sede;
 import com.envios.api_envios.sede.SedeRepository;
+import com.envios.api_envios.tipoProducto.TipoProducto;
+import com.envios.api_envios.tipoProducto.TipoProductoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +25,8 @@ public class SolicitudService {
     private final SedeRepository sedeRepository;
     private final EnviosRepository enviosRepository;
     private final SolicitudMapper solicitudMapper;
+    private final TipoProductoRepository tipoProductoRepository;
+    private final EnviosMapper enviosMapper;
 
     // cliente solicita recojo
     public SolicitudDTO solicitarRecojo(SolicitudDTO dto) {
@@ -31,6 +39,13 @@ public class SolicitudService {
         }
 
         SolicitudDomicilio solicitud = new SolicitudDomicilio();
+
+        if (dto.sedeDestinoId() != null) {
+            Sede sedeDestino = sedeRepository.findById(dto.sedeDestinoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Sede destino no encontrada"));
+            solicitud.setSedeDestino(sedeDestino);
+        }
+
         solicitud.setTipo(TipoSolicitud.RECOJO);
         solicitud.setNombreSolicitante(dto.nombreSolicitante());
         solicitud.setDniSolicitante(dto.dniSolicitante());
@@ -43,6 +58,7 @@ public class SolicitudService {
         solicitud.setSede(sede);
 
         solicitudRepository.save(solicitud);
+
         return solicitudMapper.toDTO(solicitud);
     }
 
@@ -96,12 +112,52 @@ public class SolicitudService {
     }
 
     // empleado completa la solicitud
-    public SolicitudDTO completar(Long id) {
+    public SolicitudDTO completar(Long id, CompletarSolicitudDTO completarDTO) {
         SolicitudDomicilio solicitud = solicitudRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
+
         solicitud.setEstado(EstadoSolicitud.COMPLETADA);
         solicitud.setFechaAtencion(LocalDateTime.now());
         solicitudRepository.save(solicitud);
+
+        // si es RECOJO, crea el envío automáticamente
+        if (solicitud.getTipo() == TipoSolicitud.RECOJO) {
+            Envios envio = new Envios();
+            envio.setNombreRemitente(solicitud.getNombreSolicitante());
+            envio.setDniRemitente(solicitud.getDniSolicitante());
+            envio.setNombreDestinatario(completarDTO.nombreDestinatario());
+            envio.setDniDestinatario(completarDTO.dniDestinatario());
+            envio.setProvincia(completarDTO.provincia());
+            envio.setHoraSalida(completarDTO.horaSalida());
+            envio.setHoraLlegada(completarDTO.horaLlegada());
+            envio.setFechaEnvio(LocalDateTime.now());
+            envio.setEstadoEnvio(EstadoEnvio.PORSALIR);
+            envio.setSede(solicitud.getSede());
+            envio.setNombrePersonaAutorizada(solicitud.getNombrePersonaRecibe());
+            envio.setDniPersonaAutorizada(solicitud.getDniPersonaRecibe());
+
+            // pago
+            Pagos pago = new Pagos();
+            pago.setMetodoPago(completarDTO.metodoPago());
+            pago.setFechaPago(LocalDateTime.now());
+            pago.setEstadoPago(completarDTO.estadoPago());
+            envio.setPago(pago);
+
+            // producto
+            Productos producto = new Productos();
+            TipoProducto tipo = tipoProductoRepository.findById(completarDTO.tipoProductoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Tipo de producto no encontrado"));
+            producto.setTipoProducto(tipo);
+            producto.setDescripcion(solicitud.getDescripcionProducto());
+            producto.setNumeroPaquetes(completarDTO.numeroPaquetes());
+            envio.setProducto(producto);
+
+            // calcula monto
+            pago.setMonto(producto.getPrecioPorProducto());
+
+            enviosRepository.save(envio);
+        }
+
         return solicitudMapper.toDTO(solicitud);
     }
 

@@ -39,8 +39,10 @@ public class SolicitudController {
 
     // empleado completa
     @PatchMapping("/{id}/completar")
-    public ResponseEntity<SolicitudDTO> completar(@PathVariable Long id) {
-        return ResponseEntity.ok(solicitudService.completar(id));
+    public ResponseEntity<SolicitudDTO> completar(
+            @PathVariable Long id,
+            @RequestBody(required = false) CompletarSolicitudDTO dto) {
+        return ResponseEntity.ok(solicitudService.completar(id, dto));
     }
 
     // empleado lista por sede
@@ -70,4 +72,6 @@ public class SolicitudController {
             @RequestParam(defaultValue = "15") int cantidad) {
         return ResponseEntity.ok(solicitudService.listarPorDni(dni, pagina, cantidad));
     }
+
+
 }

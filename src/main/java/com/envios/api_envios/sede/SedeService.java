@@ -64,4 +64,12 @@ public class SedeService {
         sedeRepository.save(sede);
         return sedeMapper.toDTO(sede);
     }
+
+    public SedeDTO activar(Long id) {
+        Sede sede = sedeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Sede no encontrada"));
+        sede.setActivo(true);
+        sedeRepository.save(sede);
+        return sedeMapper.toDTO(sede);
+    }
 }

@@ -45,4 +45,9 @@ public class Envios {
 
     private String nombrePersonaAutorizada;
     private String dniPersonaAutorizada;
+
+    // Envios.java — agrega esto
+    @ManyToOne
+    @JoinColumn(name = "sede_destino_id")
+    private Sede sedeDestino;
 }

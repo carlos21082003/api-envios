@@ -74,12 +74,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,    "/api/v1/sedes/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT,    "/api/v1/sedes/{id}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/sedes/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/sedes/{id}/activar").permitAll()
 
                         //ruta sedes
                         .requestMatchers(HttpMethod.POST,  "/api/v1/rutas-sedes").permitAll()
                         .requestMatchers(HttpMethod.GET,   "/api/v1/rutas-sedes").permitAll()
                         .requestMatchers(HttpMethod.GET,   "/api/v1/rutas-sedes/origen/{sedeOrigenId}").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/rutas-sedes/{id}/estado").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/sedes/{id}/activar").permitAll()
 
                         // solicitudes
                         // clientes pueden solicitar sin login

@@ -35,6 +35,12 @@ public class EnviosMapper {
                     .orElseThrow(() -> new IllegalArgumentException("Sede no encontrada"));
             envio.setSede(sede);
         }
+
+        if (dto.sedeDestinoId() != null) {
+            Sede sedeDestino = sedeRepository.findById(dto.sedeDestinoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Sede destino no encontrada"));
+            envio.setSedeDestino(sedeDestino);
+        }
         return envio;
     }
 
@@ -56,8 +62,8 @@ public class EnviosMapper {
                 envio.getSede() != null ? envio.getSede().getNombre() : null,
                 envio.getNombrePersonaAutorizada(),
                 envio.getDniPersonaAutorizada(),
-                null,
-                null
+                envio.getSedeDestino() != null ? envio.getSedeDestino().getId() : null,
+                envio.getSedeDestino() != null ? envio.getSedeDestino().getId() : null
         );
     }
 }

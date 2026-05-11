@@ -48,4 +48,8 @@ public class SolicitudDomicilio {
 
     private String nombrePersonaRecibe;
     private String dniPersonaRecibe;
+
+    @ManyToOne
+    @JoinColumn(name = "sede_destino_id")
+    private Sede sedeDestino;
 }

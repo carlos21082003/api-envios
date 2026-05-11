@@ -56,4 +56,9 @@ public class SedeController {
     public ResponseEntity<SedeDTO> desactivar(@PathVariable Long id) {
         return ResponseEntity.ok(sedeService.desactivar(id));
     }
+
+    @PatchMapping("/{id}/activar")
+    public ResponseEntity<SedeDTO> activar(@PathVariable Long id) {
+        return ResponseEntity.ok(sedeService.activar(id));
+    }
 }
