@@ -93,7 +93,16 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,   "/api/v1/solicitudes/sede/{sedeId}/estado/{estado}").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/aceptar").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/rechazar").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/completar").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/completer").permitAll()
+
+                        //Usuarios
+                        .requestMatchers(HttpMethod.POST,   "/api/v1/usuarios/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,   "/api/v1/usuarios").permitAll()
+
+                        .requestMatchers(HttpMethod.GET,   "/api/v1/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.GET,   "/api/v1/usuarios/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PUT,   "/api/v1/usuarios/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PATCH,   "/api/v1/usuarios/{id}/password").permitAll()
 
                         //reportes
                         .requestMatchers(HttpMethod.GET, "/api/v1/reportes").permitAll()

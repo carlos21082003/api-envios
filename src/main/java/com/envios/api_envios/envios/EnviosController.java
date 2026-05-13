@@ -33,9 +33,10 @@ public class EnviosController {
     @GetMapping
     public ResponseEntity<Page<EnviosDTO>> listarEnvios(
             @RequestParam(defaultValue = "0") int pagina,
-            @RequestParam(defaultValue = "15") int cantidad) {
+            @RequestParam(defaultValue = "15") int cantidad,
+            @RequestParam(required = false) Long sedeId) {
 
-        return ResponseEntity.ok(enviosService.listarEnvios(pagina, cantidad));
+        return ResponseEntity.ok(enviosService.listarEnvios(pagina, cantidad, sedeId));
     }
 
     @PutMapping("/{id}")

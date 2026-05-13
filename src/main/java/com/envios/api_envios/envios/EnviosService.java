@@ -17,7 +17,6 @@ public class EnviosService {
     private final RutaSedeService rutaSedeService;
 
     public EnviosDTO guardar(EnviosDTO enviosDTO) {
-        // valida que la ruta esté habilitada
         if (enviosDTO.sedeOrigenId() != null && enviosDTO.sedeDestinoId() != null) {
             if (!rutaSedeService.existeRuta(enviosDTO.sedeOrigenId(), enviosDTO.sedeDestinoId())) {
                 throw new IllegalArgumentException(
@@ -44,17 +43,11 @@ public class EnviosService {
         return enviosMapper.toDTO(envio); 
     }
 
-    public Page<EnviosDTO> listarEnvios(int pagina, int cantidad) {
-        Pageable pageable = PageRequest.of(pagina, cantidad);
-        Page<Envios> envios = enviosRepository.findAll(pageable);
-        return envios.map(envio -> enviosMapper.toDTO(envio));
-    }
-
     public Page<EnviosDTO> listarEnvios(int pagina, int cantidad, Long sedeId) {
         Pageable pageable = PageRequest.of(pagina, cantidad);
 
         if (sedeId != null) {
-            return enviosRepository.findBySedeId(sedeId, pageable)
+            return enviosRepository.findBySedeOrigenOrSedeDestino(sedeId, pageable)
                     .map(enviosMapper::toDTO);
         }
         return enviosRepository.findAll(pageable)
