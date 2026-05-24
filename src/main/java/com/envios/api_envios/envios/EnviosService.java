@@ -1,5 +1,6 @@
 package com.envios.api_envios.envios;
 
+import com.envios.api_envios.productos.Productos;
 import com.envios.api_envios.rutas.RutaSedeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -17,18 +20,34 @@ public class EnviosService {
     private final RutaSedeService rutaSedeService;
 
     public EnviosDTO guardar(EnviosDTO enviosDTO) {
-        if (enviosDTO.sedeOrigenId() != null && enviosDTO.sedeDestinoId() != null) {
-            if (!rutaSedeService.existeRuta(enviosDTO.sedeOrigenId(), enviosDTO.sedeDestinoId())) {
-                throw new IllegalArgumentException(
-                        "No existe una ruta habilitada entre estas sedes");
-            }
-        }
+        validarRuta(enviosDTO.sedeOrigenId(), enviosDTO.sedeDestinoId());
 
         Envios envio = enviosMapper.toEntity(enviosDTO);
-        Double montoCalculado = envio.getProducto().getPrecioPorProducto();
+
+        envio.setCodigoEnvio(generarCodigoUnico());
+
+        Double montoCalculado = envio.getProductos().stream()
+                .mapToDouble(Productos::getPrecioPorProducto)
+                .sum();
         envio.getPago().setMonto(montoCalculado);
 
         return enviosMapper.toDTO(enviosRepository.save(envio));
+    }
+
+    private String generarCodigoUnico() {
+        String codigo;
+        do {
+            codigo = String.format("%06d", new Random().nextInt(1_000_000));
+        } while (enviosRepository.existsByCodigoEnvio(codigo));
+        return codigo;
+    }
+
+    private void validarRuta(Long origenId, Long destinoId) {
+        if (origenId != null && destinoId != null
+                && !rutaSedeService.existeRuta(origenId, destinoId)) {
+            throw new IllegalArgumentException(
+                    "No existe una ruta habilitada entre estas sedes");
+        }
     }
 
     public EnviosDTO getEnvioById(Long id) {

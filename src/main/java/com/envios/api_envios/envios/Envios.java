@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -21,13 +23,16 @@ public class Envios {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String codigoEnvio;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pago_id")
     private Pagos pago;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "producto_id")
-    private Productos producto;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "envio_id")
+    private List<Productos> productos = new ArrayList<>();
 
     private String horaSalida;
     private String horaLlegada;

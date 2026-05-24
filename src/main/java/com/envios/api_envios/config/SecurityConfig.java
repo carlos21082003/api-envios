@@ -84,7 +84,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/sedes/{id}/activar").permitAll()
 
                         // solicitudes
-                        // clientes pueden solicitar sin login
                         .requestMatchers(HttpMethod.POST, "/api/v1/solicitudes/recojo").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/solicitudes/delivery").permitAll()
                         .requestMatchers(HttpMethod.GET,  "/api/v1/solicitudes/cliente/{dni}").permitAll()
@@ -93,7 +92,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,   "/api/v1/solicitudes/sede/{sedeId}/estado/{estado}").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/aceptar").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/rechazar").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/completer").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/solicitudes/{id}/completar").permitAll()
 
                         //Usuarios
                         .requestMatchers(HttpMethod.POST,   "/api/v1/usuarios/login").permitAll()

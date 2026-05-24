@@ -1,11 +1,15 @@
 package com.envios.api_envios.envios;
 
 import com.envios.api_envios.pagos.PagosMapper;
+import com.envios.api_envios.productos.Productos;
 import com.envios.api_envios.productos.ProductosMapper;
 import com.envios.api_envios.sede.Sede;
 import com.envios.api_envios.sede.SedeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -17,7 +21,15 @@ public class EnviosMapper {
     public Envios toEntity(EnviosDTO dto) {
         Envios envio = new Envios();
         envio.setPago(pagosMapper.toEntity(dto.pago()));
-        envio.setProducto(productosMapper.toEntity(dto.producto()));
+
+        // Mapear lista de productos
+        if (dto.productos() != null) {
+            List<Productos> productos = dto.productos().stream()
+                    .map(productosMapper::toEntity)
+                    .collect(Collectors.toList());
+            envio.setProductos(productos);
+        }
+
         envio.setHoraSalida(dto.horaSalida());
         envio.setHoraLlegada(dto.horaLlegada());
         envio.setFechaEnvio(dto.fechaEnvio());
@@ -47,6 +59,7 @@ public class EnviosMapper {
     public EnviosDTO toDTO(Envios envio) {
         return new EnviosDTO(
                 envio.getId(),
+                envio.getCodigoEnvio(),
                 envio.getHoraSalida(),
                 envio.getHoraLlegada(),
                 envio.getFechaEnvio(),
@@ -56,13 +69,15 @@ public class EnviosMapper {
                 envio.getDniRemitente(),
                 envio.getEstadoEnvio(),
                 pagosMapper.toDTO(envio.getPago()),
-                productosMapper.toDTO(envio.getProducto()),
+                envio.getProductos().stream()
+                        .map(productosMapper::toDTO)
+                        .collect(Collectors.toList()),
                 envio.getProvincia(),
                 envio.getSede() != null ? envio.getSede().getId() : null,
                 envio.getSede() != null ? envio.getSede().getNombre() : null,
                 envio.getNombrePersonaAutorizada(),
                 envio.getDniPersonaAutorizada(),
-                envio.getSedeDestino() != null ? envio.getSedeDestino().getId() : null,
+                envio.getSede() != null ? envio.getSede().getId() : null,
                 envio.getSedeDestino() != null ? envio.getSedeDestino().getId() : null
         );
     }

@@ -1,15 +1,10 @@
 package com.envios.api_envios.solicitud;
 
-import com.envios.api_envios.envios.Envios;
-import com.envios.api_envios.envios.EnviosMapper;
-import com.envios.api_envios.envios.EnviosRepository;
-import com.envios.api_envios.envios.EstadoEnvio;
-import com.envios.api_envios.pagos.Pagos;
-import com.envios.api_envios.productos.Productos;
+import com.envios.api_envios.envios.*;
+import com.envios.api_envios.pagos.PagosDTO;
+import com.envios.api_envios.productos.ProductosDTO;
 import com.envios.api_envios.sede.Sede;
 import com.envios.api_envios.sede.SedeRepository;
-import com.envios.api_envios.tipoProducto.TipoProducto;
-import com.envios.api_envios.tipoProducto.TipoProductoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +21,12 @@ public class SolicitudService {
     private final SedeRepository sedeRepository;
     private final EnviosRepository enviosRepository;
     private final SolicitudMapper solicitudMapper;
-    private final TipoProductoRepository tipoProductoRepository;
-    private final EnviosMapper enviosMapper;
+    private final EnviosService enviosService;
 
-    // cliente solicita recojo
     public SolicitudDTO solicitarRecojo(SolicitudDTO dto) {
         Sede sede = sedeRepository.findById(dto.sedeId())
                 .orElseThrow(() -> new IllegalArgumentException("Sede no encontrada"));
 
-        // verifica que la sede permita recojo
         if (!sede.getTieneRecojo()) {
             throw new IllegalArgumentException("Esta sede no tiene servicio de recojo a domicilio");
         }
@@ -58,23 +51,19 @@ public class SolicitudService {
         solicitud.setSede(sede);
 
         solicitudRepository.save(solicitud);
-
         return solicitudMapper.toDTO(solicitud);
     }
 
-    // cliente solicita delivery
     public SolicitudDTO solicitarDelivery(SolicitudDTO dto) {
         Sede sede = sedeRepository.findById(dto.sedeId())
                 .orElseThrow(() -> new IllegalArgumentException("Sede no encontrada"));
 
-        // verifica que la sede permita delivery
         if (!sede.getTieneDelivery()) {
             throw new IllegalArgumentException("Esta sede no tiene servicio de delivery");
         }
 
-        // verifica que el envío exista
-        Envios envio = enviosRepository.findById(dto.envioId())
-                .orElseThrow(() -> new IllegalArgumentException("Envío no encontrado"));
+        Envios envio = enviosRepository.findByCodigoEnvio(dto.codigoEnvio())
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró un envío con ese código"));
 
         SolicitudDomicilio solicitud = new SolicitudDomicilio();
         solicitud.setTipo(TipoSolicitud.DELIVERY);
@@ -92,7 +81,6 @@ public class SolicitudService {
         return solicitudMapper.toDTO(solicitud);
     }
 
-    // empleado acepta la solicitud
     public SolicitudDTO aceptar(Long id) {
         SolicitudDomicilio solicitud = solicitudRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
@@ -101,7 +89,6 @@ public class SolicitudService {
         return solicitudMapper.toDTO(solicitud);
     }
 
-    // empleado rechaza la solicitud
     public SolicitudDTO rechazar(Long id, String motivo) {
         SolicitudDomicilio solicitud = solicitudRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
@@ -111,7 +98,6 @@ public class SolicitudService {
         return solicitudMapper.toDTO(solicitud);
     }
 
-    // empleado completa la solicitud
     public SolicitudDTO completar(Long id, CompletarSolicitudDTO completarDTO) {
         SolicitudDomicilio solicitud = solicitudRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
@@ -120,62 +106,65 @@ public class SolicitudService {
         solicitud.setFechaAtencion(LocalDateTime.now());
         solicitudRepository.save(solicitud);
 
-        // si es RECOJO, crea el envío automáticamente
         if (solicitud.getTipo() == TipoSolicitud.RECOJO) {
-            Envios envio = new Envios();
-            envio.setNombreRemitente(solicitud.getNombreSolicitante());
-            envio.setDniRemitente(solicitud.getDniSolicitante());
-            envio.setNombreDestinatario(completarDTO.nombreDestinatario());
-            envio.setDniDestinatario(completarDTO.dniDestinatario());
-            envio.setProvincia(completarDTO.provincia());
-            envio.setHoraSalida(completarDTO.horaSalida());
-            envio.setHoraLlegada(completarDTO.horaLlegada());
-            envio.setFechaEnvio(LocalDateTime.now());
-            envio.setEstadoEnvio(EstadoEnvio.PORSALIR);
-            envio.setSede(solicitud.getSede());
-            envio.setNombrePersonaAutorizada(solicitud.getNombrePersonaRecibe());
-            envio.setDniPersonaAutorizada(solicitud.getDniPersonaRecibe());
 
-            // pago
-            Pagos pago = new Pagos();
-            pago.setMetodoPago(completarDTO.metodoPago());
-            pago.setFechaPago(LocalDateTime.now());
-            pago.setEstadoPago(completarDTO.estadoPago());
-            envio.setPago(pago);
+            ProductosDTO productoDTO = new ProductosDTO(
+                    null,
+                    completarDTO.tipoProductoId(),
+                    null,
+                    solicitud.getDescripcionProducto(),
+                    completarDTO.numeroPaquetes(),
+                    null
+            );
 
-            // producto
-            Productos producto = new Productos();
-            TipoProducto tipo = tipoProductoRepository.findById(completarDTO.tipoProductoId())
-                    .orElseThrow(() -> new IllegalArgumentException("Tipo de producto no encontrado"));
-            producto.setTipoProducto(tipo);
-            producto.setDescripcion(solicitud.getDescripcionProducto());
-            producto.setNumeroPaquetes(completarDTO.numeroPaquetes());
-            envio.setProducto(producto);
+            PagosDTO pagoDTO = new PagosDTO(
+                    null,
+                    null,
+                    completarDTO.metodoPago(),
+                    LocalDateTime.now(),
+                    completarDTO.estadoPago()
+            );
 
-            // calcula monto
-            pago.setMonto(producto.getPrecioPorProducto());
+            EnviosDTO envioDTO = new EnviosDTO(
+                    null,
+                    null,
+                    null,
+                    null,
+                    LocalDateTime.now(),
+                    completarDTO.nombreDestinatario(),
+                    completarDTO.dniDestinatario(),
+                    solicitud.getNombreSolicitante(),
+                    solicitud.getDniSolicitante(),
+                    EstadoEnvio.PORSALIR,
+                    pagoDTO,
+                    List.of(productoDTO),
+                    completarDTO.provincia(),
+                    solicitud.getSede() != null ? solicitud.getSede().getId() : null,
+                    null,
+                    solicitud.getNombrePersonaRecibe(),
+                    solicitud.getDniPersonaRecibe(),
+                    solicitud.getSede() != null ? solicitud.getSede().getId() : null,
+                    solicitud.getSedeDestino() != null ? solicitud.getSedeDestino().getId() : null
+            );
 
-            enviosRepository.save(envio);
+            enviosService.guardar(envioDTO);
         }
 
         return solicitudMapper.toDTO(solicitud);
     }
 
-    // empleado lista solicitudes de su sede
     public Page<SolicitudDTO> listarPorSede(Long sedeId, int pagina, int cantidad) {
         Pageable pageable = PageRequest.of(pagina, cantidad);
         return solicitudRepository.findBySedeId(sedeId, pageable)
                 .map(solicitudMapper::toDTO);
     }
 
-    // filtrar por estado
     public Page<SolicitudDTO> listarPorSedeYEstado(Long sedeId, EstadoSolicitud estado, int pagina, int cantidad) {
         Pageable pageable = PageRequest.of(pagina, cantidad);
         return solicitudRepository.findBySedeIdAndEstado(sedeId, estado, pageable)
                 .map(solicitudMapper::toDTO);
     }
 
-    // cliente ve sus solicitudes por DNI
     public Page<SolicitudDTO> listarPorDni(String dni, int pagina, int cantidad) {
         Pageable pageable = PageRequest.of(pagina, cantidad);
         return solicitudRepository.findByDniSolicitante(dni, pageable)

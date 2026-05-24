@@ -30,6 +30,7 @@ public class SolicitudMapper {
                 solicitud.getSede() != null ? solicitud.getSede().getId() : null,
                 solicitud.getSede() != null ? solicitud.getSede().getNombre() : null,
                 solicitud.getEnvio() != null ? solicitud.getEnvio().getId() : null,
+                solicitud.getEnvio() != null ? solicitud.getEnvio().getCodigoEnvio() : null,
                 solicitud.getNombrePersonaRecibe(),
                 solicitud.getDniPersonaRecibe(),
                 solicitud.getSedeDestino() != null ? solicitud.getSedeDestino().getId() : null,

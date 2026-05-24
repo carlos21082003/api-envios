@@ -4,9 +4,11 @@ import com.envios.api_envios.pagos.PagosDTO;
 import com.envios.api_envios.productos.ProductosDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record EnviosDTO(
         Long id,
+        String codigoEnvio,
         String horaSalida,
         String horaLlegada,
         LocalDateTime fechaEnvio,
@@ -15,8 +17,8 @@ public record EnviosDTO(
         String nombreRemitente,
         String dniRemitente,
         EstadoEnvio estadoEnvio,
-        PagosDTO pago,  
-        ProductosDTO producto,
+        PagosDTO pago,
+        List<ProductosDTO> productos,
         String provincia,
         Long sedeId,
         String sedeNombre,

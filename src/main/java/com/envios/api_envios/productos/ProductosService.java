@@ -20,7 +20,6 @@ public class ProductosService {
         return productosMapper.toDTO(producto);
     }
 
-
     public ProductosDTO actualizar(Long id, ProductosDTO productoDTO) {
         Productos producto = productosRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));

@@ -25,4 +25,8 @@ public interface EnviosRepository extends JpaRepository<Envios,Long> {
 
     @Query("SELECT e FROM Envios e WHERE e.sede.id = :sedeId OR e.sedeDestino.id = :sedeId")
     Page<Envios> findBySedeOrigenOrSedeDestino(@Param("sedeId") Long sedeId, Pageable pageable);
+
+    Optional<Envios> findByCodigoEnvio(String codigoEnvio);
+
+    boolean existsByCodigoEnvio(String codigoEnvio);
 }

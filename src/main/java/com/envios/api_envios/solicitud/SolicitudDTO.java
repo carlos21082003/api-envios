@@ -18,6 +18,7 @@ public record SolicitudDTO(
         Long sedeId,
         String sedeNombre,
         Long envioId,
+        String codigoEnvio,
         String nombrePersonaRecibe,
         String dniPersonaRecibe,
         Long sedeDestinoId,
