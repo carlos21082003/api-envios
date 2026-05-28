@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -56,10 +57,12 @@ public class EnviosService {
         return enviosMapper.toDTO(envio);
     }
 
-    public EnviosDTO getEnvioByDniRemitente(String dniRemitente) {
-        Envios envio = enviosRepository.findByDniRemitente(dniRemitente)
-                .orElseThrow(() -> new IllegalArgumentException("Envio no encontrado"));
-        return enviosMapper.toDTO(envio); 
+    public List<EnviosDTO> getEnviosByDniRemitente(String dniRemitente) {
+        List<Envios> envios = enviosRepository.findByDniRemitenteOrderByFechaEnvioDesc(dniRemitente);
+        if (envios.isEmpty()) {
+            throw new IllegalArgumentException("Envío no encontrado");
+        }
+        return envios.stream().map(enviosMapper::toDTO).toList();
     }
 
     public Page<EnviosDTO> listarEnvios(int pagina, int cantidad, Long sedeId) {

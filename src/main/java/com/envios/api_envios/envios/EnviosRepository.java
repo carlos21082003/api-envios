@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EnviosRepository extends JpaRepository<Envios,Long> {
-    Optional<Envios> findByDniRemitente(String dniRemitente);
+    @Query("SELECT e FROM Envios e WHERE e.dniRemitente = :dni ORDER BY e.fechaEnvio DESC")
+    List<Envios> findByDniRemitenteOrderByFechaEnvioDesc(@Param("dni") String dni);
+
 
     Long countByEstadoEnvio(EstadoEnvio estadoEnvio);
 

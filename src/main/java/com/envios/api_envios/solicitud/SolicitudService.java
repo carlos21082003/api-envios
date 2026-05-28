@@ -32,13 +32,6 @@ public class SolicitudService {
         }
 
         SolicitudDomicilio solicitud = new SolicitudDomicilio();
-
-        if (dto.sedeDestinoId() != null) {
-            Sede sedeDestino = sedeRepository.findById(dto.sedeDestinoId())
-                    .orElseThrow(() -> new IllegalArgumentException("Sede destino no encontrada"));
-            solicitud.setSedeDestino(sedeDestino);
-        }
-
         solicitud.setTipo(TipoSolicitud.RECOJO);
         solicitud.setNombreSolicitante(dto.nombreSolicitante());
         solicitud.setDniSolicitante(dto.dniSolicitante());
@@ -49,6 +42,21 @@ public class SolicitudService {
         solicitud.setFechaSolicitada(LocalDateTime.now());
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
         solicitud.setSede(sede);
+
+        // CORREGIDO — ahora sí se guardan
+        solicitud.setNombrePersonaRecibe(dto.nombrePersonaRecibe());
+        solicitud.setDniPersonaRecibe(dto.dniPersonaRecibe());
+
+        // NUEVO — destinatario del envío
+        solicitud.setNombreDestinatario(dto.nombreDestinatario());
+        solicitud.setDniDestinatario(dto.dniDestinatario());
+        solicitud.setProvinciaDestino(dto.provinciaDestino());
+
+        if (dto.sedeDestinoId() != null) {
+            Sede sedeDestino = sedeRepository.findById(dto.sedeDestinoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Sede destino no encontrada"));
+            solicitud.setSedeDestino(sedeDestino);
+        }
 
         solicitudRepository.save(solicitud);
         return solicitudMapper.toDTO(solicitud);
@@ -127,18 +135,18 @@ public class SolicitudService {
 
             EnviosDTO envioDTO = new EnviosDTO(
                     null,
-                    null,
-                    null,
+                    completarDTO.horaSalida(),
+                    completarDTO.horaLlegada(),
                     null,
                     LocalDateTime.now(),
-                    completarDTO.nombreDestinatario(),
-                    completarDTO.dniDestinatario(),
+                    solicitud.getNombreDestinatario(),
+                    solicitud.getDniDestinatario(),
                     solicitud.getNombreSolicitante(),
                     solicitud.getDniSolicitante(),
                     EstadoEnvio.PORSALIR,
                     pagoDTO,
                     List.of(productoDTO),
-                    completarDTO.provincia(),
+                    solicitud.getProvinciaDestino(),
                     solicitud.getSede() != null ? solicitud.getSede().getId() : null,
                     null,
                     solicitud.getNombrePersonaRecibe(),

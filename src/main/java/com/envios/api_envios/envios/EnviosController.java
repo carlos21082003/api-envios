@@ -5,6 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+
 @RestController
 @RequestMapping("/api/v1/envios")
 @RequiredArgsConstructor
@@ -20,8 +23,8 @@ public class EnviosController {
 
     // Buscar por DNI del remitente (código de rastreo)
     @GetMapping("/rastrear/{dniRemitente}")
-    public ResponseEntity<EnviosDTO> getEnvioByDniRemitente(@PathVariable String dniRemitente) {
-        return ResponseEntity.ok(enviosService.getEnvioByDniRemitente(dniRemitente));
+    public ResponseEntity<List<EnviosDTO>> getEnvioByDniRemitente(@PathVariable String dniRemitente) {
+        return ResponseEntity.ok(enviosService.getEnviosByDniRemitente(dniRemitente));
     }
 
     @GetMapping("/{id}")
