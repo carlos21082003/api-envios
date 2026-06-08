@@ -20,6 +20,8 @@ public class ProductosMapper {
         producto.setTipoProducto(tipoProducto);
         producto.setDescripcion(dto.descripcion());
         producto.setNumeroPaquetes(dto.numeroPaquetes());
+        producto.setPeso(dto.peso());
+        producto.setVolumen(dto.volumen());
         return producto;
     }
 
@@ -30,6 +32,8 @@ public class ProductosMapper {
                 producto.getTipoProducto().getNombre(),   // manda el nombre para mostrarlo
                 producto.getDescripcion(),
                 producto.getNumeroPaquetes(),
+                producto.getPeso(),
+                producto.getVolumen(),
                 producto.getPrecioPorProducto()           // calculado con @Transient
         );
     }
@@ -41,5 +45,7 @@ public class ProductosMapper {
         producto.setTipoProducto(tipoProducto);
         producto.setDescripcion(dto.descripcion());
         producto.setNumeroPaquetes(dto.numeroPaquetes());
+        producto.setPeso(dto.peso());
+        producto.setVolumen(dto.volumen());
     }
 }

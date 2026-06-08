@@ -121,6 +121,8 @@ public class SolicitudService {
                     completarDTO.tipoProductoId(),
                     null,
                     solicitud.getDescripcionProducto(),
+                    solicitud.getEnvio().getPesoTotal(),
+                    solicitud.getEnvio().getVolumenTotal(),
                     completarDTO.numeroPaquetes(),
                     null
             );
@@ -134,25 +136,27 @@ public class SolicitudService {
             );
 
             EnviosDTO envioDTO = new EnviosDTO(
-                    null,
-                    completarDTO.horaSalida(),
-                    completarDTO.horaLlegada(),
-                    null,
-                    LocalDateTime.now(),
-                    solicitud.getNombreDestinatario(),
-                    solicitud.getDniDestinatario(),
-                    solicitud.getNombreSolicitante(),
-                    solicitud.getDniSolicitante(),
-                    EstadoEnvio.PORSALIR,
-                    pagoDTO,
-                    List.of(productoDTO),
-                    solicitud.getProvinciaDestino(),
-                    solicitud.getSede() != null ? solicitud.getSede().getId() : null,
-                    null,
-                    solicitud.getNombrePersonaRecibe(),
-                    solicitud.getDniPersonaRecibe(),
-                    solicitud.getSede() != null ? solicitud.getSede().getId() : null,
-                    solicitud.getSedeDestino() != null ? solicitud.getSedeDestino().getId() : null
+                    null,                                          // id
+                    null,                                          // codigoEnvio
+                    completarDTO.horaSalida(),                     // horaSalida
+                    completarDTO.horaLlegada(),                    // horaLlegada
+                    LocalDateTime.now(),                           // fechaEnvio
+                    solicitud.getNombreDestinatario(),             // nombreDestinatario
+                    solicitud.getDniDestinatario(),                // dniDestinatario
+                    solicitud.getNombreSolicitante(),              // nombreRemitente
+                    solicitud.getDniSolicitante(),                 // dniRemitente
+                    EstadoEnvio.PORSALIR,                          // estadoEnvio
+                    pagoDTO,                                       // pago
+                    List.of(productoDTO),                          // productos
+                    solicitud.getProvinciaDestino(),               // provincia
+                    null,                                          // pesoTotal
+                    null,                                          // volumenTotal
+                    solicitud.getSede() != null ? solicitud.getSede().getId() : null,  // sedeId
+                    null,                                          // sedeNombre
+                    solicitud.getNombrePersonaRecibe(),            // nombrePersonaAutorizada
+                    solicitud.getDniPersonaRecibe(),               // dniPersonaAutorizada
+                    solicitud.getSede() != null ? solicitud.getSede().getId() : null,  // sedeOrigenId
+                    solicitud.getSedeDestino() != null ? solicitud.getSedeDestino().getId() : null  // sedeDestinoId
             );
 
             enviosService.guardar(envioDTO);

@@ -17,7 +17,8 @@ public class UsuarioMapper {
                 usuario.getId(),
                 usuario.getNombre(),
                 usuario.getDni(),
-                null, // nunca devuelves el password
+                null,
+                usuario.getTelefono(),
                 usuario.getRol(),
                 usuario.getSede() != null ? usuario.getSede().getId() : null,
                 usuario.getSede() != null ? usuario.getSede().getNombre() : null,
@@ -29,6 +30,7 @@ public class UsuarioMapper {
         Usuarios usuario = new Usuarios();
         usuario.setNombre(dto.nombre());
         usuario.setDni(dto.dni());
+        usuario.setTelefono(dto.telefono());
         usuario.setPassword(passwordEncoder.encode(dto.password()));
         usuario.setRol(dto.rol());
         usuario.setActivo(true);
@@ -45,6 +47,7 @@ public class UsuarioMapper {
         usuario.setNombre(dto.nombre());
         usuario.setDni(dto.dni());
         usuario.setRol(dto.rol());
+        usuario.setTelefono(dto.telefono());
         usuario.setActivo(dto.activo());
 
         if (dto.sedeId() != null) {

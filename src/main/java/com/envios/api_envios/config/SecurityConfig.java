@@ -1,5 +1,6 @@
 package com.envios.api_envios.config;
 
+import com.envios.api_envios.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,17 +11,18 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 
 public class SecurityConfig {
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -55,6 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/tipo-productos/{id}").permitAll()
 
                         //pagos
+                        .requestMatchers(HttpMethod.POST, "/api/v1/pagos/envio/{envioId}/pagar-en-linea").hasAnyRole("CLIENTE")
                         .requestMatchers(HttpMethod.GET, "/api/v1/pagos/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT,  "/api/v1/pagos/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/pagos").permitAll()
@@ -63,8 +66,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/envios/guardarEnvio").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios/rastrear/{dniRemitente}").permitAll()
                         .requestMatchers(HttpMethod.PUT,  "/api/v1/envios/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/envios/mis-envios").hasAnyRole("CLIENTE")
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/envios").permitAll()
+
 
                         // sedes
                         .requestMatchers(HttpMethod.POST,   "/api/v1/sedes").permitAll()
@@ -98,6 +103,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,   "/api/v1/usuarios/login").permitAll()
                         .requestMatchers(HttpMethod.POST,   "/api/v1/usuarios").permitAll()
 
+                        .requestMatchers(HttpMethod.GET,  "/api/v1/usuarios/me").authenticated()
                         .requestMatchers(HttpMethod.GET,   "/api/v1/usuarios").permitAll()
                         .requestMatchers(HttpMethod.GET,   "/api/v1/usuarios/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT,   "/api/v1/usuarios/{id}").permitAll()
@@ -106,9 +112,16 @@ public class SecurityConfig {
                         //reportes
                         .requestMatchers(HttpMethod.GET, "/api/v1/reportes").permitAll()
 
+                        //tarifas
+                        .requestMatchers(HttpMethod.GET, "/api/v1/tarifas/vigente").permitAll()
+
+                        //auditoria
+                        .requestMatchers(HttpMethod.GET, "/api/v1/auditoria/**").hasRole("SUPER_ADMIN")
+
                         .anyRequest().authenticated()
-                );
-                //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }

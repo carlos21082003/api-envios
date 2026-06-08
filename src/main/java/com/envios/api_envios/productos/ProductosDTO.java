@@ -6,6 +6,8 @@ public record ProductosDTO(
         String tipoProductoNombre,
         String descripcion,
         Double numeroPaquetes,
+        Double peso,
+        Double volumen,
         Double precioPorProducto
 ) {
 }

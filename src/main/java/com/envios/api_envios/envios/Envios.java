@@ -44,6 +44,12 @@ public class Envios {
     private EstadoEnvio estadoEnvio;
     private String provincia;
 
+    @Column(name = "peso_total")
+    private Double pesoTotal;
+
+    @Column(name = "volumen_total")
+    private Double volumenTotal;
+
     @ManyToOne
     @JoinColumn(name = "sede_id")
     private Sede sede;

@@ -30,4 +30,11 @@ public class PagosController {
             @RequestParam(defaultValue = "15") int cantidad) {
         return ResponseEntity.ok(pagosService.listarPagos(pagina, cantidad));
     }
+
+    @PostMapping("/envio/{envioId}/pagar-en-linea")
+    public ResponseEntity<PagosDTO> pagarEnLinea(
+            @PathVariable Long envioId,
+            @RequestBody PagoEnLineaDTO pagoDTO) {
+        return ResponseEntity.ok(pagosService.pagarEnLinea(envioId));
+    }
 }

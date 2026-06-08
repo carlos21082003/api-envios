@@ -23,6 +23,8 @@ public class Productos {
 
     private String descripcion;
     private Double numeroPaquetes;
+    private Double peso;
+    private Double volumen;
 
     @Column(name = "envio_id")
     private Long envioId;
@@ -32,4 +34,17 @@ public class Productos {
         if (tipoProducto == null || numeroPaquetes == null) return 0.0;
         return tipoProducto.getPrecioBase() * numeroPaquetes;
     }
+
+    @Transient
+    public Double getPesoTotal() {
+        if (peso == null || numeroPaquetes == null) return 0.0;
+        return peso * numeroPaquetes;
+    }
+
+    @Transient
+    public Double getVolumenTotal() {
+        if (volumen == null || numeroPaquetes == null) return 0.0;
+        return volumen * numeroPaquetes;
+    }
+
 }

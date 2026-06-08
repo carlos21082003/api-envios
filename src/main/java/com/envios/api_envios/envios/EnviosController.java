@@ -3,6 +3,7 @@ package com.envios.api_envios.envios;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,5 +48,11 @@ public class EnviosController {
             @PathVariable Long id,
             @RequestBody EnviosDTO enviosDTO) {
         return ResponseEntity.ok(enviosService.actualizarEnvio(id, enviosDTO));
+    }
+
+    @GetMapping("/mis-envios")
+    public ResponseEntity<List<EnviosDTO>> getMisEnvios(Authentication authentication) {
+        String dni = authentication.getName();
+        return ResponseEntity.ok(enviosService.getEnviosByDniRemitente(dni));
     }
 }

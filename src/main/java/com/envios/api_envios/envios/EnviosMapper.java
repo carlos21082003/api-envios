@@ -73,6 +73,8 @@ public class EnviosMapper {
                         .map(productosMapper::toDTO)
                         .collect(Collectors.toList()),
                 envio.getProvincia(),
+                envio.getPesoTotal(),
+                envio.getVolumenTotal(),
                 envio.getSede() != null ? envio.getSede().getId() : null,
                 envio.getSede() != null ? envio.getSede().getNombre() : null,
                 envio.getNombrePersonaAutorizada(),

@@ -4,6 +4,8 @@ import com.envios.api_envios.jwt.TokenDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -46,5 +48,17 @@ public class UsuariosController {
             @PathVariable Long id,
             @RequestBody String nuevaPassword) {
         return ResponseEntity.ok(usuarioService.cambiarPassword(id, nuevaPassword));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UsuariosDTO> getMe() {
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        if (authentication == null) {
+            throw new IllegalStateException("No existe una sesión autenticada");
+        }
+        String nombre = authentication.getName();
+        return ResponseEntity.ok(usuarioService.getByDni(nombre));
     }
 }

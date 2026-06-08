@@ -20,6 +20,8 @@ public record EnviosDTO(
         PagosDTO pago,
         List<ProductosDTO> productos,
         String provincia,
+        Double pesoTotal,
+        Double volumenTotal,
         Long sedeId,
         String sedeNombre,
         String nombrePersonaAutorizada,

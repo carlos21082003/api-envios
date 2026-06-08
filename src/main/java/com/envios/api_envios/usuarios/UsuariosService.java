@@ -91,4 +91,11 @@ public class UsuariosService implements UserDetailsService {
         return usuarioRepository.findBySedeId(sedeId, pageable)
                 .map(usuarioMapper::toDTO);
     }
+
+    public UsuariosDTO getByDni(String dni) {
+        return usuarioMapper.toDTO(
+                usuarioRepository.findByDni(dni)
+                        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"))
+        );
+    }
 }
