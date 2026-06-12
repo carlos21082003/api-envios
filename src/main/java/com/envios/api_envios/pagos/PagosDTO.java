@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public record PagosDTO(
         Long id,
         Double monto,
-        String metodoPago,
+        MetodoPago metodoPago,
         LocalDateTime fechaPago,
         EstadoPago estadoPago
 ) {

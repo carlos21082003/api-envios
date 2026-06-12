@@ -29,11 +29,7 @@ public class PagosService {
     public PagosDTO actualizarEstado(Long id, PagosDTO pagosDTO) {
         Pagos pago = pagosRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No se pudo localizar el pago solicitado"));
-
-        pago.setMetodoPago(pagosDTO.metodoPago());
-        pago.setFechaPago(pagosDTO.fechaPago());
-        pago.setEstadoPago(pagosDTO.estadoPago());
-
+        pagosMapper.updateEntity(pago, pagosDTO);
         pagosRepository.save(pago);
         return pagosMapper.toDTO(pago);
     }
@@ -59,7 +55,7 @@ public class PagosService {
         }
 
         pago.setEstadoPago(EstadoPago.PAGADOENLINEA);
-        pago.setMetodoPago("TARJETA_EN_LINEA");
+        pago.setMetodoPago(MetodoPago.TARJETA_EN_LINEA);
         pago.setFechaPago(LocalDateTime.now());
 
         pagosRepository.save(pago);

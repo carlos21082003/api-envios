@@ -7,7 +7,6 @@ public class PagosMapper {
 
     public Pagos toEntity(PagosDTO dto) {
         Pagos pago = new Pagos();
-
         pago.setMetodoPago(dto.metodoPago());
         pago.setFechaPago(dto.fechaPago());
         pago.setEstadoPago(dto.estadoPago());

@@ -32,9 +32,7 @@ public class PagosController {
     }
 
     @PostMapping("/envio/{envioId}/pagar-en-linea")
-    public ResponseEntity<PagosDTO> pagarEnLinea(
-            @PathVariable Long envioId,
-            @RequestBody PagoEnLineaDTO pagoDTO) {
+    public ResponseEntity<PagosDTO> pagarEnLinea(@PathVariable Long envioId) {
         return ResponseEntity.ok(pagosService.pagarEnLinea(envioId));
     }
 }
