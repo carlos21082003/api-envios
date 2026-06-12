@@ -22,12 +22,13 @@ public class EnviosService {
     private final EnviosMapper enviosMapper;
     private final RutaSedeService rutaSedeService;
     private final TarifaAdicionalRepository tarifaRepository;
+    private final CodigoEnvioGenerator codigoGenerator;
 
     public EnviosDTO guardar(EnviosDTO enviosDTO) {
         validarRuta(enviosDTO.sedeOrigenId(), enviosDTO.sedeDestinoId());
 
         Envios envio = enviosMapper.toEntity(enviosDTO);
-        envio.setCodigoEnvio(generarCodigoUnico());
+        envio.setCodigoEnvio(codigoGenerator.generar());
 
         List<Productos> productos = envio.getProductos();
 
@@ -73,14 +74,6 @@ public class EnviosService {
         return recargo;
     }
 
-    private String generarCodigoUnico() {
-        String codigo;
-        do {
-            codigo = String.format("%06d", new Random().nextInt(1_000_000));
-        } while (enviosRepository.existsByCodigoEnvio(codigo));
-        return codigo;
-    }
-
     private void validarRuta(Long origenId, Long destinoId) {
         if (origenId != null && destinoId != null
                 && !rutaSedeService.existeRuta(origenId, destinoId)) {
@@ -117,17 +110,7 @@ public class EnviosService {
     public EnviosDTO actualizarEnvio(Long id, EnviosDTO enviosDTO) {
         Envios envio = enviosRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Envio no encontrado"));
-
-        envio.setNombreRemitente(enviosDTO.nombreRemitente());
-        envio.setDniRemitente(enviosDTO.dniRemitente());
-        envio.setNombreDestinatario(enviosDTO.nombreDestinatario());
-        envio.setDniDestinatario(enviosDTO.dniDestinatario());
-        envio.setHoraSalida(enviosDTO.horaSalida());
-        envio.setHoraLlegada(enviosDTO.horaLlegada());
-        envio.setFechaEnvio(enviosDTO.fechaEnvio());
-        envio.setProvincia(enviosDTO.provincia());
-        envio.setEstadoEnvio(enviosDTO.estadoEnvio());
-
+        enviosMapper.updateEntity(envio, enviosDTO);
         enviosRepository.save(envio);
         return enviosMapper.toDTO(envio);
     }

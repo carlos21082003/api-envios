@@ -83,4 +83,16 @@ public class EnviosMapper {
                 envio.getSedeDestino() != null ? envio.getSedeDestino().getId() : null
         );
     }
+
+    public void updateEntity(Envios envio, EnviosDTO dto) {
+        envio.setNombreRemitente(dto.nombreRemitente());
+        envio.setDniRemitente(dto.dniRemitente());
+        envio.setNombreDestinatario(dto.nombreDestinatario());
+        envio.setDniDestinatario(dto.dniDestinatario());
+        envio.setHoraSalida(dto.horaSalida());
+        envio.setHoraLlegada(dto.horaLlegada());
+        envio.setFechaEnvio(dto.fechaEnvio());
+        envio.setProvincia(dto.provincia());
+        envio.setEstadoEnvio(dto.estadoEnvio());
+    }
 }
