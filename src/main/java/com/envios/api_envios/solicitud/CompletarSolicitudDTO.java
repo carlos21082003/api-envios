@@ -7,6 +7,8 @@ public record CompletarSolicitudDTO(
         String horaLlegada,
         Long tipoProductoId,
         Double numeroPaquetes,
+        Double peso,
+        Double volumen,
         String metodoPago,
         EstadoPago estadoPago
 ) {}

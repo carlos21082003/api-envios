@@ -121,9 +121,9 @@ public class SolicitudService {
                     completarDTO.tipoProductoId(),
                     null,
                     solicitud.getDescripcionProducto(),
-                    solicitud.getEnvio().getPesoTotal(),
-                    solicitud.getEnvio().getVolumenTotal(),
                     completarDTO.numeroPaquetes(),
+                    completarDTO.peso(),
+                    completarDTO.volumen(),
                     null
             );
 
@@ -159,7 +159,15 @@ public class SolicitudService {
                     solicitud.getSedeDestino() != null ? solicitud.getSedeDestino().getId() : null  // sedeDestinoId
             );
 
-            enviosService.guardar(envioDTO);
+            EnviosDTO envioCreado = enviosService.guardar(envioDTO);
+
+            if (envioCreado.id() != null) {
+                Envios envio = enviosRepository.findById(envioCreado.id()).orElse(null);
+                if (envio != null) {
+                    solicitud.setEnvio(envio);
+                    solicitudRepository.save(solicitud);
+                }
+            }
         }
 
         return solicitudMapper.toDTO(solicitud);
