@@ -1,5 +1,6 @@
 package com.envios.api_envios.productos;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ProductosController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductosDTO> actualizar(@PathVariable Long id, @RequestBody ProductosDTO productoDTO) {
+    public ResponseEntity<ProductosDTO> actualizar(@PathVariable Long id, @Valid @RequestBody ProductosDTO productoDTO) {
         return ResponseEntity.ok(productosService.actualizar(id, productoDTO));
     }
 

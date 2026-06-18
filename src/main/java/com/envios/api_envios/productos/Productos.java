@@ -1,5 +1,6 @@
 package com.envios.api_envios.productos;
 
+import com.envios.api_envios.envios.Envios;
 import com.envios.api_envios.tipoProducto.TipoProducto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,9 @@ public class Productos {
     private Double peso;
     private Double volumen;
 
-    @Column(name = "envio_id")
-    private Long envioId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "envio_id", insertable = false, updatable = false)
+    private Envios envio;
 
     @Transient
     public Double getPrecioPorProducto() {

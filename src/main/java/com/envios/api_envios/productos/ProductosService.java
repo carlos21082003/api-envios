@@ -9,18 +9,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-
+@Transactional
 public class ProductosService {
     private final ProductosRepository productosRepository;
     private final ProductosMapper productosMapper;
     private final EnviosRepository enviosRepository;
     private final TarifaAdicionalRepository tarifaRepository;
 
+    @Transactional(readOnly = true)
     public ProductosDTO getProductoById(Long id) {
         Productos producto = productosRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
@@ -34,8 +36,8 @@ public class ProductosService {
         productosMapper.updateEntity(producto, productoDTO);
         productosRepository.save(producto);
 
-        if (producto.getEnvioId() != null) {
-            recalcularTotalesEnvio(producto.getEnvioId());
+        if (producto.getEnvio() != null) {
+            recalcularTotalesEnvio(producto.getEnvio().getId());
         }
 
         return productosMapper.toDTO(producto);
@@ -74,6 +76,7 @@ public class ProductosService {
         return recargo;
     }
 
+    @Transactional(readOnly = true)
     public Page<ProductosDTO> listar(int pagina, int cantidad) {
         Pageable pageable = PageRequest.of(pagina, cantidad);
         return productosRepository.findAll(pageable)
