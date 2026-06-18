@@ -8,41 +8,47 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/v1/envios")
 @RequiredArgsConstructor
-
 public class EnviosController {
+
     private final EnviosService enviosService;
 
-    // Guardar envio
+    // Crear envío
     @PostMapping("/guardarEnvio")
     public ResponseEntity<EnviosDTO> guardar(@RequestBody EnviosDTO enviosDTO) {
-        return ResponseEntity.ok(enviosService.guardar(enviosDTO));  // EnviosDTO no Envios
+        return ResponseEntity.ok(enviosService.guardar(enviosDTO));
     }
 
-    // Buscar por DNI del remitente (código de rastreo)
+    // Rastrear por DNI remitente
     @GetMapping("/rastrear/{dniRemitente}")
     public ResponseEntity<List<EnviosDTO>> getEnvioByDniRemitente(@PathVariable String dniRemitente) {
         return ResponseEntity.ok(enviosService.getEnviosByDniRemitente(dniRemitente));
     }
 
+    // ✅ Rastrear por código de envío
+    @GetMapping("/rastrear/codigo/{codigoEnvio}")
+    public ResponseEntity<EnviosDTO> getEnvioByCodigo(@PathVariable String codigoEnvio) {
+        return ResponseEntity.ok(enviosService.getEnvioByCodigo(codigoEnvio));
+    }
+
+    // Buscar por ID
     @GetMapping("/{id}")
     public ResponseEntity<EnviosDTO> getEnvioById(@PathVariable Long id) {
         return ResponseEntity.ok(enviosService.getEnvioById(id));
     }
 
-    //listar con paginacion
+    // Listar con paginación
     @GetMapping
     public ResponseEntity<Page<EnviosDTO>> listarEnvios(
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "15") int cantidad,
             @RequestParam(required = false) Long sedeId) {
-
         return ResponseEntity.ok(enviosService.listarEnvios(pagina, cantidad, sedeId));
     }
 
+    // Actualizar envío
     @PutMapping("/{id}")
     public ResponseEntity<EnviosDTO> actualizarEnvio(
             @PathVariable Long id,
@@ -50,6 +56,7 @@ public class EnviosController {
         return ResponseEntity.ok(enviosService.actualizarEnvio(id, enviosDTO));
     }
 
+    // Mis envíos (usuario autenticado)
     @GetMapping("/mis-envios")
     public ResponseEntity<List<EnviosDTO>> getMisEnvios(Authentication authentication) {
         String dni = authentication.getName();

@@ -1,23 +1,23 @@
 package com.envios.api_envios.envios;
 
-import com.envios.api_envios.productos.Productos;
-import com.envios.api_envios.rutas.RutaSedeService;
-import com.envios.api_envios.tarifa.TarifaAdicional;
-import com.envios.api_envios.tarifa.TarifaAdicionalRepository;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import com.envios.api_envios.productos.Productos;
+import com.envios.api_envios.rutas.RutaSedeService;
+import com.envios.api_envios.tarifa.TarifaAdicional;
+import com.envios.api_envios.tarifa.TarifaAdicionalRepository;
 
-import java.util.List;
-import java.util.Random;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-
 public class EnviosService {
+
     private final EnviosRepository enviosRepository;
     private final EnviosMapper enviosMapper;
     private final RutaSedeService rutaSedeService;
@@ -44,7 +44,6 @@ public class EnviosService {
                 .mapToDouble(Productos::getVolumenTotal)
                 .sum();
 
-        // Calcular recargos
         Double recargo = calcularRecargo(pesoTotal, volumenTotal);
 
         envio.getPago().setMonto(montoBase + recargo);
@@ -55,20 +54,16 @@ public class EnviosService {
     }
 
     private Double calcularRecargo(Double pesoTotal, Double volumenTotal) {
-        TarifaAdicional tarifa = tarifaRepository.findTopBy()
-                .orElse(null);
+        TarifaAdicional tarifa = tarifaRepository.findTopBy().orElse(null);
         if (tarifa == null) return 0.0;
 
         double recargo = 0.0;
 
         if (pesoTotal > tarifa.getLimitePeso()) {
-            double pesoExtra = pesoTotal - tarifa.getLimitePeso();
-            recargo += pesoExtra * tarifa.getRecargoPeso();
+            recargo += (pesoTotal - tarifa.getLimitePeso()) * tarifa.getRecargoPeso();
         }
-
         if (volumenTotal > tarifa.getLimiteVolumen()) {
-            double volumenExtra = volumenTotal - tarifa.getLimiteVolumen();
-            recargo += volumenExtra * tarifa.getRecargoVolumen();
+            recargo += (volumenTotal - tarifa.getLimiteVolumen()) * tarifa.getRecargoVolumen();
         }
 
         return recargo;
@@ -88,6 +83,13 @@ public class EnviosService {
         return enviosMapper.toDTO(envio);
     }
 
+    // ✅ Buscar por código de envío
+    public EnviosDTO getEnvioByCodigo(String codigoEnvio) {
+        Envios envio = enviosRepository.findByCodigoEnvio(codigoEnvio)
+                .orElseThrow(() -> new IllegalArgumentException("Envío no encontrado con código: " + codigoEnvio));
+        return enviosMapper.toDTO(envio);
+    }
+
     public List<EnviosDTO> getEnviosByDniRemitente(String dniRemitente) {
         List<Envios> envios = enviosRepository.findByDniRemitenteOrderByFechaEnvioDesc(dniRemitente);
         if (envios.isEmpty()) {
@@ -100,6 +102,7 @@ public class EnviosService {
         Pageable pageable = PageRequest.of(pagina, cantidad);
 
         if (sedeId != null) {
+            // ✅ Usa el query correcto (origen O destino)
             return enviosRepository.findBySedeOrigenOrSedeDestino(sedeId, pageable)
                     .map(enviosMapper::toDTO);
         }

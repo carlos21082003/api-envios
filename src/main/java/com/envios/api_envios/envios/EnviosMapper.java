@@ -1,19 +1,22 @@
 package com.envios.api_envios.envios;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
 import com.envios.api_envios.pagos.PagosMapper;
 import com.envios.api_envios.productos.Productos;
 import com.envios.api_envios.productos.ProductosMapper;
 import com.envios.api_envios.sede.Sede;
 import com.envios.api_envios.sede.SedeRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class EnviosMapper {
+
     private final PagosMapper pagosMapper;
     private final ProductosMapper productosMapper;
     private final SedeRepository sedeRepository;
@@ -22,7 +25,6 @@ public class EnviosMapper {
         Envios envio = new Envios();
         envio.setPago(pagosMapper.toEntity(dto.pago()));
 
-        // Mapear lista de productos
         if (dto.productos() != null) {
             List<Productos> productos = dto.productos().stream()
                     .map(productosMapper::toEntity)
@@ -42,21 +44,30 @@ public class EnviosMapper {
         envio.setNombrePersonaAutorizada(dto.nombrePersonaAutorizada());
         envio.setDniPersonaAutorizada(dto.dniPersonaAutorizada());
 
-        if (dto.sedeId() != null) {
-            Sede sede = sedeRepository.findById(dto.sedeId())
-                    .orElseThrow(() -> new IllegalArgumentException("Sede no encontrada"));
+        // ✅ Sede origen: acepta sedeOrigenId o sedeId
+        Long sedeOrigenId = dto.sedeOrigenId() != null ? dto.sedeOrigenId() : dto.sedeId();
+        if (sedeOrigenId != null) {
+            Sede sede = sedeRepository.findById(sedeOrigenId)
+                    .orElseThrow(() -> new IllegalArgumentException("Sede origen no encontrada"));
             envio.setSede(sede);
         }
 
+        // ✅ Sede destino
         if (dto.sedeDestinoId() != null) {
             Sede sedeDestino = sedeRepository.findById(dto.sedeDestinoId())
                     .orElseThrow(() -> new IllegalArgumentException("Sede destino no encontrada"));
             envio.setSedeDestino(sedeDestino);
         }
+
         return envio;
     }
 
     public EnviosDTO toDTO(Envios envio) {
+        // ✅ Variables intermedias para evitar duplicación
+        Long sedeOrigenId = envio.getSede() != null ? envio.getSede().getId() : null;
+        String sedeNombre = envio.getSede() != null ? envio.getSede().getNombre() : null;
+        Long sedeDestinoId = envio.getSedeDestino() != null ? envio.getSedeDestino().getId() : null;
+
         return new EnviosDTO(
                 envio.getId(),
                 envio.getCodigoEnvio(),
@@ -75,12 +86,12 @@ public class EnviosMapper {
                 envio.getProvincia(),
                 envio.getPesoTotal(),
                 envio.getVolumenTotal(),
-                envio.getSede() != null ? envio.getSede().getId() : null,
-                envio.getSede() != null ? envio.getSede().getNombre() : null,
+                sedeOrigenId,   // sedeId
+                sedeNombre,     // sedeNombre
                 envio.getNombrePersonaAutorizada(),
                 envio.getDniPersonaAutorizada(),
-                envio.getSede() != null ? envio.getSede().getId() : null,
-                envio.getSedeDestino() != null ? envio.getSedeDestino().getId() : null
+                sedeOrigenId,   // ✅ sedeOrigenId
+                sedeDestinoId   // ✅ sedeDestinoId
         );
     }
 
@@ -94,5 +105,18 @@ public class EnviosMapper {
         envio.setFechaEnvio(dto.fechaEnvio());
         envio.setProvincia(dto.provincia());
         envio.setEstadoEnvio(dto.estadoEnvio());
+
+        // ✅ Actualizar sedes al editar
+        Long sedeOrigenId = dto.sedeOrigenId() != null ? dto.sedeOrigenId() : dto.sedeId();
+        if (sedeOrigenId != null) {
+            Sede sede = sedeRepository.findById(sedeOrigenId)
+                    .orElseThrow(() -> new IllegalArgumentException("Sede origen no encontrada"));
+            envio.setSede(sede);
+        }
+        if (dto.sedeDestinoId() != null) {
+            Sede sedeDestino = sedeRepository.findById(dto.sedeDestinoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Sede destino no encontrada"));
+            envio.setSedeDestino(sedeDestino);
+        }
     }
 }

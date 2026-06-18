@@ -1,10 +1,10 @@
 package com.envios.api_envios.envios;
 
-import com.envios.api_envios.pagos.PagosDTO;
-import com.envios.api_envios.productos.ProductosDTO;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.envios.api_envios.pagos.PagosDTO;
+import com.envios.api_envios.productos.ProductosDTO;
 
 public record EnviosDTO(
         Long id,
@@ -22,11 +22,10 @@ public record EnviosDTO(
         String provincia,
         Double pesoTotal,
         Double volumenTotal,
-        Long sedeId,
+        Long sedeId,          // sede origen (compatibilidad)
         String sedeNombre,
         String nombrePersonaAutorizada,
         String dniPersonaAutorizada,
-        Long sedeOrigenId,
-        Long sedeDestinoId
-) {
-}
+        Long sedeOrigenId,    // ✅ sede origen explícito
+        Long sedeDestinoId    // ✅ sede destino
+) {}
