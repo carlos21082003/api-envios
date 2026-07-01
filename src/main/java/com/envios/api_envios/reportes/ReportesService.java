@@ -3,6 +3,7 @@ package com.envios.api_envios.reportes;
 import com.envios.api_envios.envios.EnviosRepository;
 import com.envios.api_envios.envios.EstadoEnvio;
 import com.envios.api_envios.pagos.EstadoPago;
+import com.envios.api_envios.pagos.MetodoPago;
 import com.envios.api_envios.pagos.PagosRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,8 @@ public class ReportesService {
 
                 // pagos
                 pagosRepository.sumMonto(),
-                pagosRepository.sumMontoByMetodoPago("EFECTIVO"),
-                pagosRepository.sumMontoByMetodoPago("TRANSFERENCIA"),
+                pagosRepository.sumMontoByMetodoPago(MetodoPago.EFECTIVO),
+                pagosRepository.sumMontoByMetodoPago(MetodoPago.TRANSFERENCIA),
                 pagosRepository.countByEstadoPago(EstadoPago.PENDIENTE),
                 pagosRepository.countByEstadoPago(EstadoPago.PAGADO),
                 pagosRepository.countByEstadoPago(EstadoPago.PAGADOALRECOGER),
@@ -34,7 +35,11 @@ public class ReportesService {
                 enviosRepository.countByProvincia(),
                 pagosRepository.countByEstadoPago(EstadoPago.PAGADO),
                 pagosRepository.countByEstadoPago(EstadoPago.PENDIENTE),
-                pagosRepository.countByEstadoPago(EstadoPago.PAGADOALRECOGER)
+                pagosRepository.countByEstadoPago(EstadoPago.PAGADOALRECOGER),
+
+                // pago en línea (faltaba)
+                pagosRepository.sumMontoByMetodoPago(MetodoPago.TARJETA_EN_LINEA),
+                pagosRepository.countByEstadoPago(EstadoPago.PAGADOENLINEA)
         );
     }
 }

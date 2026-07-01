@@ -13,7 +13,7 @@ public interface PagosRepository extends JpaRepository<Pagos,Long> {
     Double sumMonto();
 
     @Query("SELECT COALESCE(SUM(p.monto), 0) FROM Pagos p WHERE p.metodoPago = :metodoPago")
-    Double sumMontoByMetodoPago(@Param("metodoPago") String metodoPago);
+    Double sumMontoByMetodoPago(@Param("metodoPago") MetodoPago metodoPago);
 
     Long countByEstadoPago(EstadoPago estadoPago);
 

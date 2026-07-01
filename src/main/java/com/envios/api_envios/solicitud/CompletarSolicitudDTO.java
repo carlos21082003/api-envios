@@ -1,6 +1,7 @@
 package com.envios.api_envios.solicitud;
 
 import com.envios.api_envios.pagos.EstadoPago;
+import com.envios.api_envios.pagos.MetodoPago;
 
 public record CompletarSolicitudDTO(
         String horaSalida,
@@ -9,6 +10,6 @@ public record CompletarSolicitudDTO(
         Double numeroPaquetes,
         Double peso,
         Double volumen,
-        String metodoPago,
+        MetodoPago metodoPago,
         EstadoPago estadoPago
 ) {}

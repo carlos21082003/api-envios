@@ -22,6 +22,10 @@ public record ReportesDTO(
         List<ProvinciasConteoDTO> enviosPorProvincia,
         Long pagosPagados,
         Long pagosPendientesGrafica,
-        Long pagosPagadoAlRecogerGrafica
+        Long pagosPagadoAlRecogerGrafica,
+
+        // pago en línea (faltaba)
+        Double totalTarjetaEnLinea,
+        Long pagosPagadoEnLinea
 ) {
 }
